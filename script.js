@@ -70,20 +70,22 @@ function processSlot(slot){
       line = "<v9.00> <e0>" + line;
     }
 
-    // Fix @Race: spacing
-    if(/^@Race:/.test(line)){
-      // Ensure a space after @Race:
-      line = line.replace(/^@Race:\s*/, "@Race: ");
+    // AGC Neranga Fix @Race: spacing
+if(/^@Race:/.test(line)){
+  // Ensure one space after @Race:
+  line = line.replace(/^@Race:\s*/, "@Race:");
 
-      // Ensure space between race code (ALB/1) and time (1:12)
-      line = line.replace(/(@Race:\s*\S+) ?(\d+:\d+)/, "$1 $2");
+  // FIXED- insert missing space between race number and time
+  // Handles cases like "GLO/39:52" -> "GLO/3 9:52" or "GLO/511:00" -> "GLO/5 11:00"
+  line = line.replace(/(@Race:[A-Z]+\/\d)(?=\d{1,2}:\d{2})/, "$1 ");
 
-      // Ensure space after closing parenthesis of time
-      line = line.replace(/(\(\d{1,2}:\d{2}\))([A-Z])/,"$1 $2"); 
+  // Ensure space after closing parenthesis of time
+  line = line.replace(/(\(\d{1,2}:\d{2}\))([A-Z])/, "$1 $2");
 
-      // Optional: normalize multiple spaces to single space
-      line = line.replace(/\s+/g, " ");
-    }
+  // Normalize spaces
+  line = line.replace(/\s+/g, " ");
+}
+
 
     outputLines.push(line);
   });
@@ -187,5 +189,4 @@ setInterval(() => {
     current = next;
   }, 2000);
 }, 5000);
-
 
