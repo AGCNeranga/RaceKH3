@@ -77,7 +77,13 @@ if(/^@Race:/.test(line)){
 
   // FIXED- insert missing space between race number and time
   // Handles cases like "GLO/39:52" -> "GLO/3 9:52" or "GLO/511:00" -> "GLO/5 11:00"
-  line = line.replace(/(@Race:[A-Z]+\/\d)(?=\d{1,2}:\d{2})/, "$1 ");
+ // FIXED- insert missing space between race number and time
+  // Handles cases like "GLO/39:52" -> "GLO/3 9:52" or "GLO/511:00" -> "GLO/5 11:00"
+  // Insert space after race number before time (works for 1 or 2 digit race numbers)
+  // Matches: @Race:<track>/<raceNumber><time>
+  // Example: @Race:GLO/910:45 -> @Race:GLO/9 10:45
+  line = line.replace(/(@Race:[A-Z]+\/)(\d)(\d{1,2}:\d{2})/, "$1$2 $3");
+  line = line.replace(/(@Race:[A-Z]+\/)(\d{1,2})(\d{2}:\d{2})/, "$1$2 $3");
 
   // Ensure space after closing parenthesis of time
   line = line.replace(/(\(\d{1,2}:\d{2}\))([A-Z])/, "$1 $2");
@@ -189,4 +195,5 @@ setInterval(() => {
     current = next;
   }, 2000);
 }, 5000);
+
 
